@@ -1,0 +1,3 @@
+[submodule "arora"]
+	path = arora
+	url = http://github.com/gabrys/arora-mini.git

@@ -1,0 +1,14 @@
+ffbrowser is a finger-friendly browser for mobile devices running Linux.
+
+It is based partially on Arora browser, but the whole UI is brand new.
+It is designed to be simple and as fast as possible. It features:
+
+* finger scrolling (scroll by moving finger on page contents)
+* simplified four-buttons user interface
+* joined bookmarks, history and tabs
+* fullscreen output
+* support for playing flash videos
+
+ffbrowser is based on QtWebKit 2.0 which gives is excellent
+standard-compliance and fairly good performance. It's slightly optimized
+for small devices by turning some eye-catchy features off.
