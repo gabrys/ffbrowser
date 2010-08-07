@@ -31,7 +31,7 @@ QString StyleUpdater::styleForWidth(int width) {
 
 // white background
 "html {"
-"   background: #fff;"
+"   background-color: #fff;"
 "}\\n"
 
 // remove fancy animations

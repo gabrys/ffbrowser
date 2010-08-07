@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-<title>ffbrowser Home Page</title>
+<title>ffBrowser Home Page</title>
 <script type="text/javascript">
 
 HomePage = {};
@@ -17,14 +17,14 @@ HomePage.goToUrlOrFalse = function(form) {
         if (! q.match(/^http/)) {
             q = "http://" + q;
         }
-        location.href = q
+        __ffBrowser__.Go(q);
         return false;
     }
 };
 
 HomePage.onLoad = function() {
     document.getElementById("search-input").focus();
-    document.getElementById("hot-pages").innerHTML = __ffbrowser__.HotPagesHTML();
+    document.getElementById("hot-pages").innerHTML = __ffBrowser__.HotPagesHTML();
 };
 
 HomePage.clear = function() {
@@ -34,6 +34,20 @@ HomePage.clear = function() {
         document.getElementById("search-clear").className = "";
     }, 400);
     return true;
+};
+
+HomePage.goToHotPage = function(url) {
+    __ffBrowser__.Go(url);
+};
+
+HomePage.toggleStar = function(el, url) {
+    if (el.className == 'star no') {
+        el.className = 'star yes';
+        __ffBrowser__.Star(url);
+    } else {
+        el.className = 'star no';
+        __ffBrowser__.Destar(url);
+    }
 };
 
 </script>
@@ -90,14 +104,14 @@ form > div {
 html > body > div#hot-pages {
     margin-top: 10px;
     background: rgba(255, 255, 255, 0.7);
-    border: 1px solid #555;
+    border: 1px solid #777;
     -webkit-border-radius: 8px !important;
 }
 
 .hot-page {
     margin: 0 15px -1px;
     padding: 10px 0;
-    border-bottom: 1px solid #555;
+    border-bottom: 1px solid rgba(119, 119, 119, 0.5);
     position: relative;
 }
 
@@ -108,22 +122,27 @@ a {
 .title {
     font-size: 30px;
     color: #111;
+    white-space: nowrap; 
+    overflow: hidden;
 }
 
 .url {
     padding-top: 2px;
     font-size: 17px;
     color: #666;
+    white-space: nowrap; 
+    overflow: hidden;
 }
 
 .star {
     position: absolute;
-    right: -15px;
-    top: 0px;
+    right: -14px;
+    top: 1px;
     width: 48px;
     height: 48px;
-    padding: 15px;
-    background: url(qrc:/res/home-star.png) no-repeat;
+    padding: 14px;
+    -webkit-border-radius: 9px !important;
+    background: url(qrc:/res/home-star.png) rgba(255, 255, 255, 0.7) no-repeat;
 }
 
 .star.no {
@@ -139,21 +158,6 @@ a {
         /><div><input id="search-input" type="text" name="q"></div
     /></form>
     <div id="hot-pages">
-        <div class="hot-page">
-            <div class="title" onclick="location.href='http://google.com/'">Google</div>
-            <div class="url" onclick="location.href='http://google.com/'">http://google.com/</div>
-            <div class="star no" onclick="this.className='star yes'"></div>
-        </div>
-        <div class="hot-page">
-            <div class="title" onclick="location.href='http://google.com/'">Google</div>
-            <div class="url" onclick="location.href='http://google.com/'">http://google.com/</div>
-            <div class="star no" onclick="this.className='star yes'"></div>
-        </div>
-        <div class="hot-page">
-            <div class="title" onclick="location.href='http://google.com/'">Google</div>
-            <div class="url" onclick="location.href='http://google.com/'">http://google.com/</div>
-            <div class="star no" onclick="this.className='star yes'"></div>
-        </div>
     </div>
 </body>
 </html>

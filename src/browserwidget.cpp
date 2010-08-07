@@ -11,16 +11,16 @@
 #include <QNetworkReply>
 #include <QPalette>
 
-#include <QDebug>
-
-BrowserWidget::BrowserWidget(QWidget *parent):
+BrowserWidget::BrowserWidget(QWidget *parent, QObject *jsProxy):
     QGraphicsView(parent),
     scene(0),
+    jsProxy(jsProxy),
     zoomStepFactor(1.25),
     homePageUrl(QUrl("qrc:/res/home.html")),
     errorPageUrl(QUrl("qrc:/res/error.html")),
-    freezeForMsecsWhenZooming(1000),
-    freezeForMsecsWhenDragging(1000),
+    pagesInFastHistory(10),
+    freezeForMsecsWhenZooming(2000),
+    freezeForMsecsWhenDragging(750),
     maxDragDistanceToEmitClick(7),
     dragDistance(maxDragDistanceToEmitClick)
 {
@@ -43,12 +43,13 @@ BrowserWidget::BrowserWidget(QWidget *parent):
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     globalSettings->setAttribute(QWebSettings::PluginsEnabled, true);
     globalSettings->setAttribute(QWebSettings::TiledBackingStoreEnabled, true);
-    globalSettings->setMaximumPagesInCache(10);
+    globalSettings->setMaximumPagesInCache(pagesInFastHistory);
+    webView->page()->history()->setMaximumItemCount(pagesInFastHistory);
     webView->page()->setForwardUnsupportedContent(true);
     
     // connects
     connect(webView, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChanging(QUrl)));
-    connect(webView, SIGNAL(urlChanged(QUrl)), this, SIGNAL(urlChanged(QUrl)));
+    connect(webView, SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
     connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(newScene()));
     connect(webView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
     connect(&unfreezeTimer, SIGNAL(timeout()), this, SLOT(unfreezeTiles()));
@@ -97,17 +98,35 @@ void BrowserWidget::resetZoom() {
     horizontalScrollBar()->setValue(horizontalScrollBar()->value() / scale);
     verticalScrollBar()->setValue(verticalScrollBar()->value() / scale);
     newScene();
+    emit zoomChanged(1);
 }
 
 void BrowserWidget::goHome() {
     loadUrl(homePageUrl);
 }
 
-void BrowserWidget::loadUrl(QUrl url) {
+void BrowserWidget::loadUrlBackend(QUrl url, bool tryFromHistory) {
     if (url == homePageUrl) {
         emit loadingHomePage();
+    } else if (tryFromHistory) {
+        QWebHistory *history = webView->page()->history();
+        for (int i = 0; i < history->count(); i++) {
+            if (history->itemAt(i).url() == url) {
+                history->goToItem(history->itemAt(i));
+                urlChanging(history->itemAt(i).url()); // workaround
+                return;
+            }
+        }
     }
     webView->load(url);
+}
+
+void BrowserWidget::loadUrl(QUrl url) {
+    loadUrlBackend(url, false);
+}
+
+void BrowserWidget::loadUrlTryingHistory(QUrl url) {
+    loadUrlBackend(url, true);
 }
 
 void BrowserWidget::urlChanging(QUrl url) {
@@ -124,10 +143,19 @@ void BrowserWidget::urlChanging(QUrl url) {
     
     lastUrl = url;
     centerOn(QPoint(0, 0));
+    
+    emit urlChanged(url);
+}
+
+void BrowserWidget::setJsProxy(QObject *newJsProxy) {
+    jsProxy = newJsProxy;
+    addJavaScriptBinding();
 }
 
 void BrowserWidget::addJavaScriptBinding() {
-    //webView->page()->mainFrame()->addToJavaScriptWindowObject("__ffBrowser__", );
+    if (jsProxy) {
+        webView->page()->mainFrame()->addToJavaScriptWindowObject("__ffBrowser__", jsProxy);
+    }
 }
 
 QVariant BrowserWidget::evaluateJavaScript(QString source) {

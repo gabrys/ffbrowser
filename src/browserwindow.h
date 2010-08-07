@@ -4,6 +4,8 @@
 #include "browserwidget.h"
 #include "menuwidget.h"
 #include <QProgressBar>
+#include "hotpages.h"
+#include "jsproxy.h"
 
 #ifndef BROWSERWINDOW_H
 #define BROWSERWINDOW_H
@@ -16,8 +18,9 @@ public:
     BrowserWindow(QWidget *parent = 0);
 
 private slots:
-    void zoomChanging(float newZoom);
-    void urlChanging(QUrl newUrl);
+    void zoomChanging(float);
+    void urlChanging(QUrl);
+    void titleChanging(QString);
     void loadProgress(int percent);
     void loadingHomePage();
     void unloadingHomePage();
@@ -30,6 +33,8 @@ private:
     BrowserWidget *browserWidget;
     MenuWidget *menuWidget;
     QProgressBar *progressBar;
+    HotPages hotPages;
+    JSProxy jsProxy;
     float zoomFactor;
     QUrl url;
 };

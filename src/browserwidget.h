@@ -12,18 +12,20 @@ class BrowserWidget : public QGraphicsView {
     Q_OBJECT
     
 public:
-    BrowserWidget(QWidget *parent = 0);
+    BrowserWidget(QWidget *parent = 0, QObject *jsProxy = 0);
     void freezeTilesFor(int msecs);
     void wideEmulationMode(bool wide);
     QVariant evaluateJavaScript(QString source);
+    void setJsProxy(QObject *jsProxy);
 
 public slots:
     void back();
+    void loadUrl(QUrl);
+    void loadUrlTryingHistory(QUrl);
     void zoomIn();
     void zoomOut();
     void resetZoom();
     void goHome();
-    void loadUrl(QUrl);
     void unfreezeTiles();
 
 signals:
@@ -31,8 +33,9 @@ signals:
     void loadProgress(int percent);
     void loadingHomePage();
     void unloadingHomePage();
-    void zoomChanged(float newZoomLevel);
-    void urlChanged(QUrl url);
+    void zoomChanged(float);
+    void urlChanged(QUrl);
+    void titleChanged(QString);
 
 private slots:
     void urlChanging(QUrl url);
@@ -45,11 +48,13 @@ private:
     QGraphicsScene *scene;
     QGraphicsWebView *webView;
     QTimer unfreezeTimer;
+    QObject *jsProxy;
 
 // configuration
     float zoomStepFactor;
     QUrl homePageUrl;
     QUrl errorPageUrl;
+    int pagesInFastHistory;
     int freezeForMsecsWhenZooming;
     int freezeForMsecsWhenDragging;
     int maxDragDistanceToEmitClick;
@@ -60,6 +65,7 @@ private:
     QUrl lastUrl;
 
 // methods
+    void loadUrlBackend(QUrl url, bool tryHistory);
     void changeZoom(float zoomChangeFactor);
     QList<QSslCertificate> acceptedSslCerts;
 
