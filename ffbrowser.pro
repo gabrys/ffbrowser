@@ -1,9 +1,9 @@
-lessThan(QT_VERSION, 4.5) {
-    error("ffbrowser requires Qt 4.5 or greater")
+lessThan(QT_VERSION, 4.6) {
+    error("ffBrowser requires Qt 4.6 or greater")
 }
 
 TEMPLATE = subdirs
-SUBDIRS  = src tools
+SUBDIRS  = src
 CONFIG += ordered
 
 unix {

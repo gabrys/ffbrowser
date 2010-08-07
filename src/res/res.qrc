@@ -1,0 +1,16 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="res">
+    <file>back.png</file>
+    <file>zoom-in.png</file>
+    <file>zoom-out.png</file>
+    <file>go-home.png</file>
+    <file>home.html</file>
+    <file>error.html</file>
+    <file>home-bg.png</file>
+    <file>home-search-left.png</file>
+    <file>home-search-bg.png</file>
+    <file>home-search-clear.png</file>
+    <file>home-search-go.png</file>
+    <file>home-star.png</file>
+</qresource>
+</RCC>

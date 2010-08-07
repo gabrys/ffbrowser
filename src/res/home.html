@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>ffbrowser Home Page</title>
+<script type="text/javascript">
+
+HomePage = {};
+
+HomePage.goToUrlOrFalse = function(form) {
+    document.getElementById("search-go").className = "active";
+    var q = "" + form.q.value;
+    if (q.match(/^ *(https?:.*|www\..*|[a-zA-Z0-9]+\.[a-zA-Z0-9]+(\..*|\/.*|)) *$/)) {
+        q = q.replace(/^ */, "");
+        q = q.replace(/ *$/, "");
+        if (! q.match(/^http/)) {
+            q = "http://" + q;
+        }
+        location.href = q
+        return false;
+    }
+};
+
+HomePage.onLoad = function() {
+    document.getElementById("search-input").focus();
+    document.getElementById("hot-pages").innerHTML = __ffbrowser__.HotPagesHTML();
+};
+
+HomePage.clear = function() {
+    document.getElementById("search-clear").className = "active";
+    document.getElementById("search-input").focus();
+    setTimeout(function() {
+        document.getElementById("search-clear").className = "";
+    }, 400);
+    return true;
+};
+
+</script>
+<style type="text/css">
+
+html {
+    background: url(qrc:/res/home-bg.png) !important;
+}
+
+body {
+    margin: 0;
+    padding: 15px;
+}
+
+form, input {
+    padding: 0;
+    height: 56px;
+    border: 0;
+    margin: 0;
+    font-size: 25px;
+}
+
+form {
+    background: url(qrc:/res/home-search-left.png) left no-repeat;
+}
+
+input {
+    float: right;
+    background: url(qrc:/res/home-search-bg.png) repeat-x;
+}
+
+form > div {
+    margin: 0 144px 0 6px;
+}
+
+#search-go {
+    background: url(qrc:/res/home-search-go.png) no-repeat;
+    width: 87px;
+}
+
+#search-clear {
+    background: url(qrc:/res/home-search-clear.png) no-repeat;
+    width: 57px;
+}
+
+#search-go.active, #search-clear.active {
+    background-position: 0 -56px;
+}
+
+#search-input {
+    width: 100%;
+}
+
+html > body > div#hot-pages {
+    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #555;
+    -webkit-border-radius: 8px !important;
+}
+
+.hot-page {
+    margin: 0 15px -1px;
+    padding: 10px 0;
+    border-bottom: 1px solid #555;
+    position: relative;
+}
+
+a {
+    text-decoration: none;
+}
+
+.title {
+    font-size: 30px;
+    color: #111;
+}
+
+.url {
+    padding-top: 2px;
+    font-size: 17px;
+    color: #666;
+}
+
+.star {
+    position: absolute;
+    right: -15px;
+    top: 0px;
+    width: 48px;
+    height: 48px;
+    padding: 15px;
+    background: url(qrc:/res/home-star.png) no-repeat;
+}
+
+.star.no {
+    background-position: 0 -76px;
+}
+
+</style>
+</head>
+<body id="homepage-body" onload="HomePage.onLoad();">
+    <form method="GET" action="http://www.google.com/m/search" onsubmit="return HomePage.goToUrlOrFalse(this)"
+        ><input id="search-go" type="submit" value=""
+        /><input id="search-clear" type="reset" value="" onclick="return HomePage.clear()"
+        /><div><input id="search-input" type="text" name="q"></div
+    /></form>
+    <div id="hot-pages">
+        <div class="hot-page">
+            <div class="title" onclick="location.href='http://google.com/'">Google</div>
+            <div class="url" onclick="location.href='http://google.com/'">http://google.com/</div>
+            <div class="star no" onclick="this.className='star yes'"></div>
+        </div>
+        <div class="hot-page">
+            <div class="title" onclick="location.href='http://google.com/'">Google</div>
+            <div class="url" onclick="location.href='http://google.com/'">http://google.com/</div>
+            <div class="star no" onclick="this.className='star yes'"></div>
+        </div>
+        <div class="hot-page">
+            <div class="title" onclick="location.href='http://google.com/'">Google</div>
+            <div class="url" onclick="location.href='http://google.com/'">http://google.com/</div>
+            <div class="star no" onclick="this.className='star yes'"></div>
+        </div>
+    </div>
+</body>
+</html>
+
