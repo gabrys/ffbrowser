@@ -17,10 +17,11 @@ public:
 
 private slots:
     void zoomChanging(float newZoom);
-    void updateStyleSheet();
+    void urlChanging(QUrl newUrl);
     void loadProgress(int percent);
     void loadingHomePage();
     void unloadingHomePage();
+    void updateStyleSheet();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -30,6 +31,7 @@ private:
     MenuWidget *menuWidget;
     QProgressBar *progressBar;
     float zoomFactor;
+    QUrl url;
 };
 
 #endif

@@ -22,9 +22,10 @@ BrowserWindow::BrowserWindow(QWidget *parent):
     connect(browserWidget, SIGNAL(canGoBack(bool)), menuWidget, SLOT(setBackButtonEnabled(bool)));
     connect(browserWidget, SIGNAL(loadingHomePage()), this, SLOT(loadingHomePage()));
     connect(browserWidget, SIGNAL(unloadingHomePage()), this, SLOT(unloadingHomePage()));
-    connect(browserWidget, SIGNAL(urlChanged(QUrl)), this, SLOT(updateStyleSheet()));
     connect(browserWidget, SIGNAL(zoomChanged(float)), this, SLOT(zoomChanging(float)));
     connect(browserWidget, SIGNAL(zoomChanged(float)), this, SLOT(updateStyleSheet()));
+    connect(browserWidget, SIGNAL(urlChanged(QUrl)), this, SLOT(updateStyleSheet()));
+    connect(browserWidget, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChanging(QUrl)));
     connect(browserWidget, SIGNAL(loadProgress(int)), this, SLOT(loadProgress(int)));
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -56,6 +57,10 @@ void BrowserWindow::zoomChanging(float newZoom) {
     zoomFactor = newZoom;
 }
 
+void BrowserWindow::urlChanging(QUrl url) {
+    progressBar->setFormat(url.toString());
+}
+
 void BrowserWindow::resizeEvent(QResizeEvent *event) {
     updateStyleSheet();
 }
@@ -66,11 +71,9 @@ void BrowserWindow::updateStyleSheet() {
 
 void BrowserWindow::loadProgress(int percent) {
     if (percent == 100) {
-        progressBar->setFormat("Loaded");
         progressBar->setValue(0);
         browserWidget->freezeTilesFor(0); // workaround
     } else {
-        progressBar->setFormat("Loading: %p%");
         progressBar->setValue(percent);
     }
 }
