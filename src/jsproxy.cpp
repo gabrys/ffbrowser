@@ -17,11 +17,11 @@ QString JSProxy::HotPagesHTML() {
     
     QString ret = "";
     QString tpl =
-        "<div class='hot-page'>"
+        "<a class='hot-page' href='javascript:;'>"
             "<div class='title' onclick=\"HomePage.goToHotPage('%1');\">%2&nbsp;</div>"
             "<div class='url' onclick=\"HomePage.goToHotPage('%1');\">%1&nbsp;</div>"
             "<div class='star %3' onclick=\"HomePage.toggleStar(this, '%1')\"></div>"
-        "</div>"
+        "</a>"
     ;
     
     QList<QUrl> pages = hotPages->getPages();

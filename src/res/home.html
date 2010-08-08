@@ -23,7 +23,6 @@ HomePage.goToUrlOrFalse = function(form) {
 };
 
 HomePage.onLoad = function() {
-    document.getElementById("search-input").focus();
     document.getElementById("hot-pages").innerHTML = __ffBrowser__.HotPagesHTML();
 };
 
@@ -48,6 +47,7 @@ HomePage.toggleStar = function(el, url) {
         el.className = 'star no';
         __ffBrowser__.Destar(url);
     }
+    document.getElementById("fake-link").focus();
 };
 
 </script>
@@ -101,22 +101,33 @@ form > div {
     width: 100%;
 }
 
-html > body > div#hot-pages {
+html > body > div#hot-pages-wrapper {
     margin-top: 10px;
     background: rgba(255, 255, 255, 0.7);
     border: 1px solid #777;
     -webkit-border-radius: 8px !important;
 }
 
-.hot-page {
+html > body > div > div#hot-pages {
+    margin-top: -1px;
+}
+
+html > body > div > div#hot-pages > a.hot-page {
+    display: block;
+    text-decoration: none;
     margin: 0 15px -1px;
     padding: 10px 0;
     border-bottom: 1px solid rgba(119, 119, 119, 0.5);
     position: relative;
 }
 
-a {
-    text-decoration: none;
+html > body > div > div#hot-pages > a.hot-page:focus {
+    margin: -1px;
+    padding: 9px 15px 10px 15px;
+    border: 1px solid rgba(119, 119, 119, 0.5);
+    -webkit-border-radius: 8px !important;
+    background: rgba(255, 105, 0, 0.3) !important;
+    outline: 0 !important;
 }
 
 .title {
@@ -145,6 +156,11 @@ a {
     background: url(qrc:/res/home-star.png) rgba(255, 255, 255, 0.7) no-repeat;
 }
 
+.hot-page:focus .star {
+    top: 0;
+    right: 1px;
+}
+
 .star.no {
     background-position: 0 -76px;
 }
@@ -152,12 +168,15 @@ a {
 </style>
 </head>
 <body id="homepage-body" onload="HomePage.onLoad();">
+    <a href="javascript:;" id="fake-link"></a>
     <form method="GET" action="http://www.google.com/m/search" onsubmit="return HomePage.goToUrlOrFalse(this)"
         ><input id="search-go" type="submit" value=""
         /><input id="search-clear" type="reset" value="" onclick="return HomePage.clear()"
         /><div><input id="search-input" type="text" name="q"></div
     /></form>
-    <div id="hot-pages">
+    <div id="hot-pages-wrapper">
+        <div id="hot-pages">
+        </div>
     </div>
 </body>
 </html>

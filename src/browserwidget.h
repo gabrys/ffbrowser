@@ -57,6 +57,7 @@ private:
     float zoomStepFactor;
     QUrl homePageUrl;
     QUrl errorPageUrl;
+    QUrl unsupportedPageUrl;
     int pagesInFastHistory;
     int freezeForMsecsWhenZooming;
     int freezeForMsecsWhenDragging;

@@ -18,6 +18,7 @@ BrowserWidget::BrowserWidget(QWidget *parent, QSettings *settings, QObject *jsPr
     zoomStepFactor              (settings->value("browser/zoom_step_factor").toFloat()),
     homePageUrl                 (settings->value("browser/home_page_url").toString()),
     errorPageUrl                (settings->value("browser/error_url").toString()),
+    unsupportedPageUrl          (settings->value("browser/unsupported_url").toString()),
     pagesInFastHistory          (settings->value("browser/pages_in_fast_history").toInt()),
     freezeForMsecsWhenZooming   (settings->value("browser/freeze_time_when_zoom_ms").toInt()),
     freezeForMsecsWhenDragging  (settings->value("browser/freeze_time_when_drag_ms").toInt()),
@@ -177,6 +178,22 @@ void BrowserWidget::unfreezeTiles() {
 }
 
 void BrowserWidget::unsupportedContent(QNetworkReply *reply) {
+    if (! reply) {
+        loadUrl(errorPageUrl);
+    }
+
+    if (reply->error() == QNetworkReply::NoError) {
+        QString url = unsupportedPageUrl.toString();
+        url += "?url=" + reply->url().toString();
+        QVariant mimeType = reply->header(QNetworkRequest::ContentTypeHeader);
+        if (mimeType.isValid()) {
+            url += "&mime=" + mimeType.toString();
+        }
+        loadUrl(url);
+        reply->abort();
+        return;
+    }
+    
     loadUrl(errorPageUrl);
 }
 
@@ -189,11 +206,11 @@ void BrowserWidget::sslErrors(QNetworkReply *reply, const QList<QSslError> &sslE
             return;
         }
     }
-    QString msg("<qt>");
+    QString msg = "<qt>There is a problem with the site's certificate:<ul>";
     for (int i = 0; i < sslErrors.count(); i++) {
-        msg += sslErrors[i].errorString() + "<br/><br/>";
+        msg += "<li>" + sslErrors[i].errorString() + "</li>";
     }
-    msg += "Do you want to ignore these errors?</qt>";
+    msg += "</ul>Do you want to ignore these errors?</qt>";
     if (QMessageBox::warning(this, "SSL Errors", msg, QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
         if (! sslCert.isNull() && ! acceptedSslCerts.contains(sslCert)) {
             acceptedSslCerts.append(QSslCertificate(sslCert));
@@ -213,6 +230,7 @@ void BrowserWidget::wideEmulationMode(bool wide) {
 
 void BrowserWidget::resizeEvent(QResizeEvent *event) {
     wideEmulationMode(wideEmulation);
+    newScene();
 }
 
 // finger scrolling
@@ -226,13 +244,18 @@ void BrowserWidget::mousePressEvent(QMouseEvent *event) {
 
 void BrowserWidget::mouseMoveEvent(QMouseEvent *event) {
     if (event->buttons() & Qt::LeftButton) {
-        freezeTilesFor(freezeForMsecsWhenDragging);
+        //freezeTilesFor(freezeForMsecsWhenDragging);
         QPoint newScrollPos = lastScrollPos - event->pos() + lastMousePos;
         horizontalScrollBar()->setValue(newScrollPos.x());
         verticalScrollBar()->setValue(newScrollPos.y());
         
         dragDistance += abs(event->pos().x() - lastMousePos.x());
         dragDistance += abs(event->pos().y() - lastMousePos.y());
+        
+        // emit wheel event to let you scroll overflow:auto divs and similar things
+        if (event->pos().y() - lastMousePos.y()) {
+            wheelEvent(new QWheelEvent(event->pos(), event->pos().y() - lastMousePos.y(), 0, 0));
+        }
         
         lastMousePos = event->pos();
         lastScrollPos = newScrollPos;

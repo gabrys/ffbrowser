@@ -1,11 +1,15 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="res">
+    <!-- menu buttons -->
     <file>back.png</file>
     <file>zoom-in.png</file>
     <file>zoom-out.png</file>
     <file>go-home.png</file>
+    <!-- static HTMLs -->
     <file>home.html</file>
     <file>error.html</file>
+    <file>unsupported.html</file>
+    <!-- images for home page -->
     <file>home-bg.png</file>
     <file>home-search-left.png</file>
     <file>home-search-bg.png</file>

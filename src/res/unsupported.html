@@ -1,0 +1,39 @@
+<html>
+<head>
+<title></title>
+<script type="text/javascript">
+
+UnsupportedPage = {
+    GET: (function() {
+        var map = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            map[key] = unescape(value);
+        });
+        return map;
+    })(),
+    htmlescape: function(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    },
+    onLoad: function() {
+        url = UnsupportedPage.GET.url;
+        mime = UnsupportedPage.GET.mime;
+        document.getElementById("url").innerHTML = UnsupportedPage.htmlescape(url);
+        if (mime) {
+            document.getElementById("mime").innerHTML = UnsupportedPage.htmlescape(mime);
+        }
+        document.getElementById("actions").innerHTML = '<p><a href="http://docs.google.com/viewer?url=' +
+            encodeURIComponent(url) + '&embedded=true">View Online in Google Docs</a></p>' +
+            '<p><a href="javascript:;">Download using wget</a></p>';
+    }
+};
+
+</script>
+</head>
+<body onload="UnsupportedPage.onLoad()">
+    <p>The document is not viewable in the browser.</p>
+    <p>URL: <span id="url"></span></p>
+    <p>MIME type: <span id="mime">unknown</span></p>
+    <p>What do you want to do with it?</p>
+    <div id="actions"></div>
+</body>
+</html>
