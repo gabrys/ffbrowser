@@ -9,6 +9,7 @@ QT += webkit network
 
 HEADERS += \
     browsersettings.h \
+    browserwebpage.h \
     browserwidget.h \
     browserwindow.h \
     hotpages.h \
@@ -18,6 +19,7 @@ HEADERS += \
 
 SOURCES += \
     browsersettings.cpp \
+    browserwebpage.cpp \
     browserwidget.cpp \
     browserwindow.cpp \
     hotpages.cpp \

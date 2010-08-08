@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QSslCertificate>
 #include <QSettings>
+#include "browserwebpage.h"
 
 #ifndef BROWSERWIDGET_H
 #define BROWSERWIDGET_H
@@ -50,6 +51,7 @@ private:
     QGraphicsWebView *webView;
     QTimer unfreezeTimer;
     QObject *jsProxy;
+    BrowserWebPage *webPage;
 
 // configuration
     float zoomStepFactor;

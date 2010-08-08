@@ -25,7 +25,10 @@ BrowserWidget::BrowserWidget(QWidget *parent, QSettings *settings, QObject *jsPr
     dragDistance(maxDragDistanceToEmitClick)
 {
     
-    webView = new QGraphicsWebView(),
+    webView = new QGraphicsWebView();
+    webPage = new BrowserWebPage();
+    webView->setPage(webPage);
+    
     newScene();
     
     // visual settings
