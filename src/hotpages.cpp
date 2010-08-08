@@ -1,14 +1,9 @@
 
 #include "hotpages.h"
 
-#include <QFile>
-#include <QTextStream>
-#include <QDebug>
-
-HotPages::HotPages(QObject *parent):
+HotPages::HotPages(QObject *parent, QSettings *settings):
     QObject(parent),
-    storePath("/tmp/ffbrowser-hotpages"),
-    maxNonStaredItems(10)
+    settings(settings)
 {
     load();
 }
@@ -21,11 +16,15 @@ QString HotPages::title(QUrl url) {
     return titles.value(url, QString(""));
 }
 
+
 bool HotPages::stared(QUrl url) {
     return stars.contains(url);
 }
 
 void HotPages::add(QUrl url, QString title) {
+    if (url.scheme() == settings->value("hotpages/dont_track_scheme")) {
+        return;
+    }
     titles.insert(url, title);
     if (all.contains(url)) {
         all.removeAt(all.indexOf(url));
@@ -71,34 +70,27 @@ void HotPages::cleanUp() {
 
 void HotPages::dump() {
     cleanUp();
-    QFile file(storePath);
-    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
-    QTextStream stream(&file);
+    
+    settings->remove("hotpages-store");
+    settings->setValue("hotpages-store/number_of_items", all.count());
+    QString tpl = "hotpages-store/item_%1_%2";
     for (int i = 0; i < all.count(); i++) {
         QUrl url = all[i];
-        stream << url.toString() << "\n";
-        stream << title(url) << "\n";
-        stream << stared(url) << "\n\n";
+        settings->setValue(tpl.arg(i).arg("url"), url.toString());
+        settings->setValue(tpl.arg(i).arg("title"), title(url));
+        settings->setValue(tpl.arg(i).arg("stared"), stared(url));
     }
 }
 
 void HotPages::load() {
-    QFile file(storePath);
-    if (! file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-    QTextStream stream(&file);
-    QUrl url;
-    QString title;
-    int stared;
-    while (! stream.atEnd()) {
-        url = QUrl(stream.readLine());
-        title = stream.readLine();
-        stream >> stared;
-        stream.readLine(); // empty line
-        stream.readLine(); // empty line
-        add(url, title);
-        if (stared) {
+    maxNonStaredItems = settings->value("hotpages/max_number_of_history_items").toInt();
+
+    int count = settings->value("hotpages-store/number_of_items", 0).toInt();
+    QString tpl = "hotpages-store/item_%1_%2";
+    for (int i = count - 1; i >= 0; i--) {
+        QUrl url = settings->value(tpl.arg(i).arg("url")).toUrl();
+        add(url, settings->value(tpl.arg(i).arg("title")).toString());
+        if (settings->value(tpl.arg(i).arg("stared")).toBool()) {
             star(url);
         }
     }

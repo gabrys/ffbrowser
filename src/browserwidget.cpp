@@ -11,17 +11,17 @@
 #include <QNetworkReply>
 #include <QPalette>
 
-BrowserWidget::BrowserWidget(QWidget *parent, QObject *jsProxy):
+BrowserWidget::BrowserWidget(QWidget *parent, QSettings *settings, QObject *jsProxy):
     QGraphicsView(parent),
     scene(0),
     jsProxy(jsProxy),
-    zoomStepFactor(1.25),
-    homePageUrl(QUrl("qrc:/res/home.html")),
-    errorPageUrl(QUrl("qrc:/res/error.html")),
-    pagesInFastHistory(10),
-    freezeForMsecsWhenZooming(2000),
-    freezeForMsecsWhenDragging(750),
-    maxDragDistanceToEmitClick(7),
+    zoomStepFactor              (settings->value("browser/zoom_step_factor").toFloat()),
+    homePageUrl                 (settings->value("browser/home_page_url").toString()),
+    errorPageUrl                (settings->value("browser/error_url").toString()),
+    pagesInFastHistory          (settings->value("browser/pages_in_fast_history").toInt()),
+    freezeForMsecsWhenZooming   (settings->value("browser/freeze_time_when_zoom_ms").toInt()),
+    freezeForMsecsWhenDragging  (settings->value("browser/freeze_time_when_drag_ms").toInt()),
+    maxDragDistanceToEmitClick  (settings->value("browser/click_if_drag_at_most_px").toInt()),
     dragDistance(maxDragDistanceToEmitClick)
 {
     
@@ -52,11 +52,12 @@ BrowserWidget::BrowserWidget(QWidget *parent, QObject *jsProxy):
     connect(webView, SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
     connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(newScene()));
     connect(webView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
-    connect(&unfreezeTimer, SIGNAL(timeout()), this, SLOT(unfreezeTiles()));
     connect(webView->page(), SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(unsupportedContent(QNetworkReply*)));
     connect(webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError>&)),
                                                  this, SLOT(sslErrors(QNetworkReply*, const QList<QSslError>&))
     );
+    connect(&unfreezeTimer, SIGNAL(timeout()), this, SLOT(unfreezeTiles()));
+    unfreezeTimer.setSingleShot(true);
     
     connect(webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(addJavaScriptBinding()));
     addJavaScriptBinding();

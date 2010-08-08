@@ -4,12 +4,10 @@
 #include <QList>
 #include <QUrl>
 
-JSProxy::JSProxy(QObject *parent) : QObject(parent) {
-    hotPages = 0;
-}
-
-void JSProxy::setHotPages(HotPages *newHotPages) {
-    hotPages = newHotPages;
+JSProxy::JSProxy(QObject *parent, HotPages *hotPages):
+    QObject(parent),
+    hotPages(hotPages)
+{
 }
 
 QString JSProxy::HotPagesHTML() {
@@ -20,8 +18,8 @@ QString JSProxy::HotPagesHTML() {
     QString ret = "";
     QString tpl =
         "<div class='hot-page'>"
-            "<div class='title' onclick=\"HomePage.goToHotPage('%1');\">%2</div>"
-            "<div class='url' onclick=\"HomePage.goToHotPage('%1');\">%1</div>"
+            "<div class='title' onclick=\"HomePage.goToHotPage('%1');\">%2&nbsp;</div>"
+            "<div class='url' onclick=\"HomePage.goToHotPage('%1');\">%1&nbsp;</div>"
             "<div class='star %3' onclick=\"HomePage.toggleStar(this, '%1')\"></div>"
         "</div>"
     ;
@@ -29,7 +27,11 @@ QString JSProxy::HotPagesHTML() {
     QList<QUrl> pages = hotPages->getPages();
     for (int i = 0; i < pages.count(); i++) {
         QUrl url = pages[i];
-        ret += tpl.arg(url.toString(), hotPages->title(url), hotPages->stared(url) ? "yes" : "no");
+        ret += tpl.arg(
+            htmlEscape(url.toString()),
+            htmlEscape(hotPages->title(url) == "" ? "<no title>" : hotPages->title(url)),
+            hotPages->stared(url) ? "yes" : "no"
+        );
     }
     return ret;
 }
@@ -46,3 +48,6 @@ void JSProxy::Destar(QString url) {
     emit destar(QUrl(url));
 }
 
+QString JSProxy::htmlEscape(QString text) {
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+}

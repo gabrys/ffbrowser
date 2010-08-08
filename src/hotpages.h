@@ -2,6 +2,7 @@
 #include <QUrl>
 #include <QList>
 #include <QMap>
+#include <QSettings>
 
 #ifndef HOTPAGES_H
 #define HOTPAGES_H
@@ -11,7 +12,7 @@ class HotPages : public QObject {
     Q_OBJECT
     
 public:
-    HotPages(QObject *parent = 0);
+    HotPages(QObject *parent, QSettings *settings);
     QList<QUrl> getPages();
     QString title(QUrl url);
     bool stared(QUrl url);
@@ -24,7 +25,7 @@ public slots:
     void destar(QUrl url);
 
 private:
-    QString storePath;
+    QSettings *settings;
     int maxNonStaredItems;
     QMap<QUrl,QString> titles;
     QList<QUrl> all;

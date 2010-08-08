@@ -3,6 +3,7 @@
 #include <QGraphicsWebView>
 #include <QTimer>
 #include <QSslCertificate>
+#include <QSettings>
 
 #ifndef BROWSERWIDGET_H
 #define BROWSERWIDGET_H
@@ -12,7 +13,7 @@ class BrowserWidget : public QGraphicsView {
     Q_OBJECT
     
 public:
-    BrowserWidget(QWidget *parent = 0, QObject *jsProxy = 0);
+    BrowserWidget(QWidget *parent, QSettings *settings, QObject *jsProxy = 0);
     void freezeTilesFor(int msecs);
     void wideEmulationMode(bool wide);
     QVariant evaluateJavaScript(QString source);

@@ -8,6 +8,7 @@ DEPENDPATH += $$PWD
 QT += webkit network
 
 HEADERS += \
+    browsersettings.h \
     browserwidget.h \
     browserwindow.h \
     hotpages.h \
@@ -16,6 +17,7 @@ HEADERS += \
     styleupdater.h
 
 SOURCES += \
+    browsersettings.cpp \
     browserwidget.cpp \
     browserwindow.cpp \
     hotpages.cpp \

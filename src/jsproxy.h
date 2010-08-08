@@ -9,8 +9,7 @@ class JSProxy : public QObject {
     Q_OBJECT
     
 public:
-    JSProxy(QObject *parent = 0);
-    void setHotPages(HotPages *hotPages);
+    JSProxy(QObject *parent, HotPages *hotPages);
 
 public slots:
     QString HotPagesHTML();
@@ -25,6 +24,7 @@ signals:
 
 private:
     HotPages *hotPages;
+    QString htmlEscape(QString text);
 };
 
 #endif

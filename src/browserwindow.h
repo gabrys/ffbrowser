@@ -1,11 +1,13 @@
 #include <QWidget>
 #include <QUrl>
 
+#include "browsersettings.h"
 #include "browserwidget.h"
 #include "menuwidget.h"
 #include <QProgressBar>
 #include "hotpages.h"
 #include "jsproxy.h"
+#include <QTimer>
 
 #ifndef BROWSERWINDOW_H
 #define BROWSERWINDOW_H
@@ -16,6 +18,7 @@ class BrowserWindow : public QWidget {
     
 public:
     BrowserWindow(QWidget *parent = 0);
+    ~BrowserWindow();
 
 private slots:
     void zoomChanging(float);
@@ -25,18 +28,21 @@ private slots:
     void loadingHomePage();
     void unloadingHomePage();
     void updateStyleSheet();
+    void saveSettings();
 
 protected:
     void resizeEvent(QResizeEvent *event);
 
 private:
+    BrowserSettings *settings;
     BrowserWidget *browserWidget;
     MenuWidget *menuWidget;
     QProgressBar *progressBar;
-    HotPages hotPages;
-    JSProxy jsProxy;
+    HotPages *hotPages;
+    JSProxy *jsProxy;
     float zoomFactor;
     QUrl url;
+    QTimer saveSettingsTimer;
 };
 
 #endif

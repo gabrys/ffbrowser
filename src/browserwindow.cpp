@@ -9,10 +9,10 @@ BrowserWindow::BrowserWindow(QWidget *parent):
     QWidget(parent),
     zoomFactor(1)
 {
-    
-    jsProxy.setHotPages(&hotPages);
-
-    browserWidget = new BrowserWidget(this, &jsProxy);
+    settings = new BrowserSettings();
+    hotPages = new HotPages(this, settings);
+    jsProxy = new JSProxy(this, hotPages);
+    browserWidget = new BrowserWidget(this, settings, jsProxy);
     menuWidget = new MenuWidget(this);
     progressBar = new QProgressBar(this);
 
@@ -31,9 +31,9 @@ BrowserWindow::BrowserWindow(QWidget *parent):
     connect(browserWidget, SIGNAL(titleChanged(QString)), this, SLOT(titleChanging(QString)));
     connect(browserWidget, SIGNAL(loadProgress(int)), this, SLOT(loadProgress(int)));
 
-    connect(&jsProxy, SIGNAL(go(QUrl)), browserWidget, SLOT(loadUrlTryingHistory(QUrl)));
-    connect(&jsProxy, SIGNAL(star(QUrl)), &hotPages, SLOT(star(QUrl)));
-    connect(&jsProxy, SIGNAL(destar(QUrl)), &hotPages, SLOT(destar(QUrl)));
+    connect(jsProxy, SIGNAL(go(QUrl)), browserWidget, SLOT(loadUrlTryingHistory(QUrl)));
+    connect(jsProxy, SIGNAL(star(QUrl)), hotPages, SLOT(star(QUrl)));
+    connect(jsProxy, SIGNAL(destar(QUrl)), hotPages, SLOT(destar(QUrl)));
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(browserWidget);
@@ -45,6 +45,18 @@ BrowserWindow::BrowserWindow(QWidget *parent):
     setLayout(layout);
     browserWidget->goHome();
     
+    // save settings each 100 seconds
+    saveSettingsTimer.start(100 * 1000);
+    connect(&saveSettingsTimer, SIGNAL(timeout()), this, SLOT(saveSettings()));
+}
+
+BrowserWindow::~BrowserWindow() {
+    saveSettings();
+}
+
+void BrowserWindow::saveSettings() {
+    hotPages->dump();
+    settings->sync();
 }
 
 void BrowserWindow::loadingHomePage() {
@@ -71,8 +83,7 @@ void BrowserWindow::urlChanging(QUrl newUrl) {
 }
 
 void BrowserWindow::titleChanging(QString title) {
-    hotPages.add(url, title);
-    hotPages.dump();
+    hotPages->add(url, title);
 }
 
 void BrowserWindow::resizeEvent(QResizeEvent *event) {
