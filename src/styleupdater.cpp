@@ -46,7 +46,10 @@ QString StyleUpdater::styleForWidth(int width) {
 "}\\n"
 
 // assure text does not overflow over screen
-"* > p, * > ul, * > ol, * > li, * > td, * > h1, * > h2, * > h3, * > h4, * > h5, * > h6, * > span {"
+"* > p, * > ul, * > ol, * > li, * > td, "
+"* > h1, * > h2, * > h3, * > h4, * > h5, * > h6, "
+"* > span, * > dd, * > dt, * > label, "
+"* > input, * > textarea {"
 "    max-width: %3px !important;"
 "}\\n"
 
