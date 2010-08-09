@@ -34,6 +34,7 @@ BrowserWindow::BrowserWindow(QWidget *parent):
     connect(jsProxy, SIGNAL(go(QUrl)), browserWidget, SLOT(loadUrlTryingHistory(QUrl)));
     connect(jsProxy, SIGNAL(star(QUrl)), hotPages, SLOT(star(QUrl)));
     connect(jsProxy, SIGNAL(destar(QUrl)), hotPages, SLOT(destar(QUrl)));
+    connect(jsProxy, SIGNAL(pressKey(QString)), browserWidget, SLOT(pressKey(QString)));
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(browserWidget);
@@ -102,3 +103,4 @@ void BrowserWindow::loadProgress(int percent) {
         progressBar->setValue(percent);
     }
 }
+

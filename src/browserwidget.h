@@ -29,6 +29,7 @@ public slots:
     void resetZoom();
     void goHome();
     void unfreezeTiles();
+    void pressKey(QString key);
 
 signals:
     void canGoBack(bool);

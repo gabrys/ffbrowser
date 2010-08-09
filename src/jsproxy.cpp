@@ -48,6 +48,10 @@ void JSProxy::Destar(QString url) {
     emit destar(QUrl(url));
 }
 
+void JSProxy::PressKey(QString key) {
+    emit pressKey(key);
+}
+
 QString JSProxy::htmlEscape(QString text) {
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
 }

@@ -50,14 +50,100 @@ HomePage.toggleStar = function(el, url) {
     document.getElementById("fake-link").focus();
 };
 
+HomePage.showKeyboard = function() {
+    if (document.getElementById("keyboard")) {
+        // show keyboard, remove "disabled" class
+        document.getElementById("keyboard").className = '';
+    } else {
+        var keyboard = '<div id="keyboard">';
+        var key_rows = [
+            ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o'],
+            ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+            ['z', 'x', 'c', 'v', 'b', 'n', 'm', 'p', '0'],
+            ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            ['⇪', '⎇', 'space', '.', '/', '-', '⇦', '⨯'],
+        /* shift rows */
+            ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O'],
+            ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+            ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'P', '0'],
+            ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            ['⇪', '⎇', 'space', '.', '/', '-', '⇦', '⨯'],
+        /* alt rows */
+            ['!', '@', '#', '$', '%', '^', '&amp;', '*'],
+            ['[', ']', '(', ')', '{', '}', '<', '>'],
+            ['=', '+', '-', '_', '/', '\\','|', '~'],
+            ['?', ';', ',', '.', ':', '`', '"', "'"],
+            ['⎇', '⇦', '⨯'],
+        ];
+        for (row in key_rows) {
+            keyboard += '<div class="keyboard-row" id="keyboard-row-' + row + '">';
+            for (key in key_rows[row]) {
+                var l = key_rows[row][key];
+                var p = l.replace("'", "apos").replace('"', "quot").replace('\\', 'backslash');
+                keyboard += '<div class="key-wrapper" id="key-wrapper-' + row + '-' + l + '">';
+                keyboard += '<div class="key" onmousedown="return false;" onmouseup="HomePage.keyPressed(\'' + p + '\')">' + l + '</div>';
+                keyboard += '</div>';
+            }
+            keyboard += '</div>';
+        }
+        keyboard += '</div>';
+        document.getElementById("keyboard-placeholder").innerHTML = keyboard;
+    }
+};
+
+HomePage.keyPressed = function(key) {
+    var field = document.getElementById("search-input");
+    field.focus();
+    if (key == '⨯') {
+        HomePage.hideKeyboard();
+        return;
+    }
+    var keyboard_shift = document.getElementById("keyboard-shift");
+    var keyboard_alt = document.getElementById("keyboard-alt");
+    
+    if (keyboard_alt.className == "alt") {
+        keyboard_alt.className = "";
+    } else if (key == '⎇') {
+        keyboard_alt.className = "alt";
+        keyboard_shift.className = "";
+    }
+    
+    if (keyboard_shift.className == "shift") {
+        keyboard_shift.className = "";
+    } else if (key == '⇪') {
+        keyboard_shift.className = "shift";
+        keyboard_alt.className = "";
+    }
+
+    if (key == '⇪' || key == '⎇') {
+        return;
+    }
+
+    if (key == '⇦') key = 'backspace';
+    if (key == 'space') key = ' ';
+    if (key == 'quot') key = '"';
+    if (key == 'apos') key = "'";
+    if (key == 'backslash') key = '\\';
+
+    __ffBrowser__.pressKey(key);
+};
+
+HomePage.hideKeyboard = function() {
+    // hide keyboard, set add class disabled
+    document.getElementById("keyboard").className = 'disabled';
+};
+
 </script>
 <style type="text/css">
 
 html {
-    background: url(qrc:/res/home-bg.png) !important;
+    background: url(home-bg.png) !important;
+    width: 100%;
+    overflow: hidden;
 }
 
 body {
+    overflow: hidden;
     margin: 0;
     padding: 15px;
 }
@@ -71,12 +157,12 @@ form, input {
 }
 
 form {
-    background: url(qrc:/res/home-search-left.png) left no-repeat;
+    background: url(home-search-left.png) left no-repeat;
 }
 
 input {
     float: right;
-    background: url(qrc:/res/home-search-bg.png) repeat-x;
+    background: url(home-search-bg.png) repeat-x;
 }
 
 form > div {
@@ -84,12 +170,12 @@ form > div {
 }
 
 #search-go {
-    background: url(qrc:/res/home-search-go.png) no-repeat;
+    background: url(home-search-go.png) no-repeat;
     width: 87px;
 }
 
 #search-clear {
-    background: url(qrc:/res/home-search-clear.png) no-repeat;
+    background: url(home-search-clear.png) no-repeat;
     width: 57px;
 }
 
@@ -105,7 +191,7 @@ html > body > div#hot-pages-wrapper {
     margin-top: 10px;
     background: rgba(255, 255, 255, 0.7);
     border: 1px solid #777;
-    -webkit-border-radius: 8px !important;
+    border-radius: 8px !important;
 }
 
 html > body > div > div#hot-pages {
@@ -125,7 +211,7 @@ html > body > div > div#hot-pages > a.hot-page:focus {
     margin: -1px;
     padding: 9px 15px 10px 15px;
     border: 1px solid rgba(119, 119, 119, 0.5);
-    -webkit-border-radius: 8px !important;
+    border-radius: 8px !important;
     background: rgba(255, 105, 0, 0.3) !important;
     outline: 0 !important;
 }
@@ -152,8 +238,8 @@ html > body > div > div#hot-pages > a.hot-page:focus {
     width: 48px;
     height: 48px;
     padding: 14px;
-    -webkit-border-radius: 9px !important;
-    background: url(qrc:/res/home-star.png) rgba(255, 255, 255, 0.7) no-repeat;
+    border-radius: 9px !important;
+    background: url(home-star.png) rgba(255, 255, 255, 0.7) no-repeat;
 }
 
 .hot-page:focus .star {
@@ -165,6 +251,123 @@ html > body > div > div#hot-pages > a.hot-page:focus {
     background-position: 0 -76px;
 }
 
+body {
+    position: relative;
+}
+
+#keyboard-placeholder {
+    position: absolute; 
+    height: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    z-index: 10;
+}
+
+#keyboard {
+    margin: 9px -15px;
+    padding: 10px 15px;
+    background: -webkit-gradient(linear, center top, center bottom, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0.7)));
+}
+
+#keyboard.disabled {
+    display: none;
+}
+
+.keyboard-row {
+    padding: 0 8px;
+    font-family: sans;
+    font-weight: bold;
+    font-size: 22px;
+    /*text-transform: uppercase;*/
+    text-align: center;
+}
+
+.key-wrapper {
+    display: inline-block;
+    width: 10%;
+    margin: 1.25% 0.5%;
+}
+
+html > body * > .key {
+    padding: 24px 0;
+    background: -webkit-gradient(linear, center top, center bottom, from(#fff), to(#bbb));
+    border-radius: 12px !important;
+    color: #444;
+    overflow: hidden;
+}
+
+#key-wrapper-4-⨯ .key,
+#key-wrapper-9-⨯ .key,
+#key-wrapper-14-⨯ .key {
+    background: -webkit-gradient(linear, center top, center bottom, from(#fe0000), to(#b00));
+    color: #fff;
+}
+
+#key-wrapper-9-⇪ .key, #key-wrapper-14-⎇ .key {
+    background: -webkit-gradient(linear, center top, center bottom, from(#85adfe), to(#506ba2));
+    color: #fff;
+}
+
+#key-wrapper-4-⎇, #key-wrapper-4-⇦,
+#key-wrapper-9-⎇, #key-wrapper-9-⇦,
+#key-wrapper-14-⎇, #key-wrapper-14-⇦ {
+    width: 15.5%;
+}
+
+#key-wrapper-4-space .key,
+#key-wrapper-9-space .key,
+#key-wrapper-14-space .key {
+    color: transparent;
+}
+
+/* no modifier keys */
+#keyboard-row-5, #keyboard-row-6, #keyboard-row-7,
+#keyboard-row-8, #keyboard-row-9, #keyboard-row-10,
+#keyboard-row-11, #keyboard-row-12, #keyboard-row-13,
+#keyboard-row-14 {
+    display: none;
+}
+
+/* shift */
+#keyboard-shift.shift #keyboard-row-0,
+#keyboard-shift.shift #keyboard-row-1,
+#keyboard-shift.shift #keyboard-row-2,
+#keyboard-shift.shift #keyboard-row-3,
+#keyboard-shift.shift #keyboard-row-4 {
+    display: none;
+}
+
+#keyboard-shift.shift #keyboard-row-5,
+#keyboard-shift.shift #keyboard-row-6,
+#keyboard-shift.shift #keyboard-row-7,
+#keyboard-shift.shift #keyboard-row-8,
+#keyboard-shift.shift #keyboard-row-9 {
+    display: block;
+}
+
+/* alt */
+#keyboard-alt.alt #keyboard-row-0,
+#keyboard-alt.alt #keyboard-row-1,
+#keyboard-alt.alt #keyboard-row-2,
+#keyboard-alt.alt #keyboard-row-3,
+#keyboard-alt.alt #keyboard-row-4 {
+    display: none;
+}
+
+#keyboard-alt.alt #keyboard-row-10,
+#keyboard-alt.alt #keyboard-row-11,
+#keyboard-alt.alt #keyboard-row-12,
+#keyboard-alt.alt #keyboard-row-13,
+#keyboard-alt.alt #keyboard-row-14 {
+    display: block;
+}
+
+#key-wrapper-14-⎇ {
+    margin-left: 11%;
+    margin-right: 44%;
+}
+
 </style>
 </head>
 <body id="homepage-body" onload="HomePage.onLoad();">
@@ -172,11 +375,15 @@ html > body > div > div#hot-pages > a.hot-page:focus {
     <form method="GET" action="http://www.google.com/m/search" onsubmit="return HomePage.goToUrlOrFalse(this)"
         ><input id="search-go" type="submit" value=""
         /><input id="search-clear" type="reset" value="" onclick="return HomePage.clear()"
-        /><div><input id="search-input" type="text" name="q"></div
-    /></form>
-    <div id="hot-pages-wrapper">
-        <div id="hot-pages">
+        /><div><input id="search-input" type="text" name="q" onclick="HomePage.showKeyboard()"/></div
+    ></form>
+    <div id="keyboard-alt">
+        <div id="keyboard-shift">
+            <div id="keyboard-placeholder"></div>
         </div>
+    </div>
+    <div id="hot-pages-wrapper">
+        <div id="hot-pages"></div>
     </div>
 </body>
 </html>

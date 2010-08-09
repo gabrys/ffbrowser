@@ -110,6 +110,16 @@ void BrowserWidget::goHome() {
     loadUrl(homePageUrl);
 }
 
+void BrowserWidget::pressKey(QString key) {
+    int qt_key = 0;
+    if (key == "backspace") {
+        qt_key = Qt::Key_Backspace;
+        key = "";
+    }
+    keyPressEvent(new QKeyEvent(QEvent::KeyPress, qt_key, 0, key));
+    keyReleaseEvent(new QKeyEvent(QEvent::KeyRelease, qt_key, 0, key));
+}
+
 void BrowserWidget::loadUrlBackend(QUrl url, bool tryFromHistory) {
     if (url == homePageUrl) {
         emit loadingHomePage();
