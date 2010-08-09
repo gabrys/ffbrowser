@@ -72,11 +72,23 @@ void BrowserWidget::back() {
 }
 
 void BrowserWidget::changeZoom(float zoomChangeFactor) {
-    freezeTilesFor(freezeForMsecsWhenZooming);
+    freezeTilesFor(1000 * 1000); // freeze forever ...
     webView->setScale(webView->scale() * zoomChangeFactor);
     horizontalScrollBar()->setValue(horizontalScrollBar()->value() * zoomChangeFactor);
     verticalScrollBar()->setValue(verticalScrollBar()->value() * zoomChangeFactor);
+    freezeTilesFor(freezeForMsecsWhenZooming); // ... and unfreeze after that time
     emit zoomChanged(webView->scale());
+}
+
+void BrowserWidget::resetZoom() {
+    float scale = webView->scale();
+    freezeTilesFor(1000 * 1000);
+    webView->setScale(1);
+    horizontalScrollBar()->setValue(horizontalScrollBar()->value() / scale);
+    verticalScrollBar()->setValue(verticalScrollBar()->value() / scale);
+    freezeTilesFor(freezeForMsecsWhenZooming); // ... and unfreeze after that time
+    emit zoomChanged(1);
+    newScene();
 }
 
 void BrowserWidget::zoomIn() {
@@ -95,15 +107,6 @@ void BrowserWidget::newScene() {
     scene = new QGraphicsScene();
     scene->addItem(webView);
     this->setScene(scene);
-}
-
-void BrowserWidget::resetZoom() {
-    float scale = webView->scale();
-    webView->setScale(1);
-    horizontalScrollBar()->setValue(horizontalScrollBar()->value() / scale);
-    verticalScrollBar()->setValue(verticalScrollBar()->value() / scale);
-    newScene();
-    emit zoomChanged(1);
 }
 
 void BrowserWidget::goHome() {
