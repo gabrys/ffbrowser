@@ -28,7 +28,7 @@ BrowserSettings::BrowserSettings():
     setDefault("browser/unsupported_url", "qrc:/res/unsupported.html");
     setDefault("browser/pages_in_fast_history", 5);
     setDefault("browser/freeze_time_when_zoom_ms", 2500);
-    setDefault("browser/freeze_time_when_drag_ms", 750);
+    setDefault("browser/freeze_time_when_drag_ms", 50);
     setDefault("browser/click_if_drag_at_most_px", 7);
     setDefault("hotpages/max_number_of_history_items", value("browser/pages_in_fast_history").toInt());
     setDefault("hotpages/dont_track_scheme", "qrc");

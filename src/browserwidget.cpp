@@ -254,7 +254,7 @@ void BrowserWidget::mousePressEvent(QMouseEvent *event) {
 
 void BrowserWidget::mouseMoveEvent(QMouseEvent *event) {
     if (event->buttons() & Qt::LeftButton) {
-        //freezeTilesFor(freezeForMsecsWhenDragging);
+        freezeTilesFor(freezeForMsecsWhenDragging);
         QPoint newScrollPos = lastScrollPos - event->pos() + lastMousePos;
         horizontalScrollBar()->setValue(newScrollPos.x());
         verticalScrollBar()->setValue(newScrollPos.y());

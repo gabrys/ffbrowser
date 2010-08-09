@@ -97,10 +97,8 @@ void BrowserWindow::updateStyleSheet() {
 
 void BrowserWindow::loadProgress(int percent) {
     if (percent == 100) {
-        progressBar->setValue(0);
         browserWidget->freezeTilesFor(0); // workaround
-    } else {
-        progressBar->setValue(percent);
     }
+    progressBar->setValue(percent);
 }
 
