@@ -9,6 +9,7 @@
 HomePage = {};
 
 HomePage.goToUrlOrFalse = function(form) {
+    HomePage.hideKeyboard();
     document.getElementById("search-go").className = "active";
     var q = "" + form.q.value;
     if (q.match(/^ *(https?:.*|www\..*|[a-zA-Z0-9]+\.[a-zA-Z0-9]+(\..*|\/.*|)) *$/)) {
@@ -81,7 +82,8 @@ HomePage.showKeyboard = function() {
                 var l = key_rows[row][key];
                 var p = l.replace("'", "apos").replace('"', "quot").replace('\\', 'backslash');
                 keyboard += '<div class="key-wrapper" id="key-wrapper-' + row + '-' + l + '">';
-                keyboard += '<div class="key" onmousedown="return false;" onmouseup="HomePage.keyPressed(\'' + p + '\')">' + l + '</div>';
+                keyboard += '<div class="key" onmousedown="return false" ';
+                keyboard += 'onmouseup="HomePage.keyPressed(\'' + p + '\')">' + l + '</div>';
                 keyboard += '</div>';
             }
             keyboard += '</div>';
@@ -92,12 +94,12 @@ HomePage.showKeyboard = function() {
 };
 
 HomePage.keyPressed = function(key) {
-    var field = document.getElementById("search-input");
-    field.focus();
+    document.getElementById("search-input").focus();
+    
     if (key == '⨯') {
         HomePage.hideKeyboard();
-        return;
     }
+    
     var keyboard_shift = document.getElementById("keyboard-shift");
     var keyboard_alt = document.getElementById("keyboard-alt");
     
@@ -115,7 +117,7 @@ HomePage.keyPressed = function(key) {
         keyboard_alt.className = "";
     }
 
-    if (key == '⇪' || key == '⎇') {
+    if (key == '⇪' || key == '⎇' || key == '⨯') {
         return;
     }
 
@@ -279,7 +281,6 @@ body {
     font-family: sans;
     font-weight: bold;
     font-size: 22px;
-    /*text-transform: uppercase;*/
     text-align: center;
 }
 
