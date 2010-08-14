@@ -2,4 +2,4 @@ Makefile
 *_res.cpp
 moc_*
 *.o
-ffBrowser
+ffbrowser

@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-TARGET = ffBrowser
+TARGET = ffbrowser
 
 include(src.pri)
 
