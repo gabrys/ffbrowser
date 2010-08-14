@@ -20,6 +20,9 @@ signals:
 
 public slots:
     void setBackButtonEnabled(bool enabled);
+    void setZoomInButtonEnabled(bool enabled);
+    void setZoomOutButtonEnabled(bool enabled);
+    void setGoHomeButtonEnabled(bool enabled);
 
 private:
     QPushButton *backButton;

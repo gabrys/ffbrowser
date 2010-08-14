@@ -16,7 +16,9 @@ BrowserWindow::BrowserWindow(QWidget *parent):
     menuWidget = new MenuWidget(this);
     progressBar = new QProgressBar(this);
 
-    connect(menuWidget, SIGNAL(backClicked()), browserWidget, SLOT(back()));
+    connect(menuWidget, SIGNAL(backClicked()), this, SLOT(backClicked()));
+    connect(menuWidget, SIGNAL(zoomInClicked()), this, SLOT(disableZoomButtons()));
+    connect(menuWidget, SIGNAL(zoomOutClicked()), this, SLOT(disableZoomButtons()));
     connect(menuWidget, SIGNAL(zoomInClicked()), browserWidget, SLOT(zoomIn()));
     connect(menuWidget, SIGNAL(zoomOutClicked()), browserWidget, SLOT(zoomOut()));
     connect(menuWidget, SIGNAL(goHomeClicked()), browserWidget, SLOT(goHome()));
@@ -100,5 +102,21 @@ void BrowserWindow::loadProgress(int percent) {
         browserWidget->freezeTilesFor(0); // workaround
     }
     progressBar->setValue(percent);
+}
+
+void BrowserWindow::backClicked() {
+    menuWidget->setBackButtonEnabled(false);
+    browserWidget->back();
+}
+
+void BrowserWindow::disableZoomButtons() {
+    menuWidget->setZoomInButtonEnabled(false);
+    menuWidget->setZoomOutButtonEnabled(false);
+    QTimer::singleShot(0, this, SLOT(enableZoomButtons()));
+}
+
+void BrowserWindow::enableZoomButtons() {
+    menuWidget->setZoomInButtonEnabled(true);
+    menuWidget->setZoomOutButtonEnabled(true);
 }
 

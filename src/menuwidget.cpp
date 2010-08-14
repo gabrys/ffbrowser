@@ -49,3 +49,15 @@ void MenuWidget::setBackButtonEnabled(bool enabled) {
     backButton->setEnabled(enabled);
 }
 
+void MenuWidget::setZoomInButtonEnabled(bool enabled) {
+    zoomInButton->setEnabled(enabled);
+}
+
+void MenuWidget::setZoomOutButtonEnabled(bool enabled) {
+    zoomOutButton->setEnabled(enabled);
+}
+
+void MenuWidget::setGoHomeButtonEnabled(bool enabled) {
+    goHomeButton->setEnabled(enabled);
+}
+

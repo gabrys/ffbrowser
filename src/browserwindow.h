@@ -29,6 +29,9 @@ private slots:
     void unloadingHomePage();
     void updateStyleSheet();
     void saveSettings();
+    void backClicked();
+    void disableZoomButtons();
+    void enableZoomButtons();
 
 protected:
     void resizeEvent(QResizeEvent *event);
