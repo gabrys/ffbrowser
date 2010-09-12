@@ -7,8 +7,6 @@ It is designed to be simple and as fast as possible. It features:
 * simplified four-buttons user interface
 * joined bookmarks, history and tabs
 * fullscreen output
-* support for playing flash videos
 
 ffbrowser is based on QtWebKit 2.0 which gives it excellent
-standard-compliance and fairly good performance. It's slightly optimized
-for small devices by turning some eye-catchy features off.
+standard-compliance and fairly good performance.
