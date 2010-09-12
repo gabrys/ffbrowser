@@ -3,3 +3,6 @@ Makefile
 moc_*
 *.o
 ffbrowser
+backup-*-pre-ffbrowser.tgz
+ffbrowser_*.deb
+ffbrowser_*.ipk
