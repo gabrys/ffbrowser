@@ -282,6 +282,7 @@ void BrowserWidget::mouseReleaseEvent(QMouseEvent *event) {
         ));
         QGraphicsView::mouseReleaseEvent(event);
         dragDistance = maxDragDistanceToEmitClick;
+        unfreezeTiles(); // little hack
     }
 }
 // end of finger scrolling

@@ -30,14 +30,14 @@ BrowserDefaultSettings::BrowserDefaultSettings(const QString &organization):
     QSettings(organization)
 {
     setValue("--/info", "this file will be overwritten on each start of the browser");
-    setValue("browser/zoom_step_factor", 1.25);
+    setValue("browser/zoom_step_factor", 1.40);
     setValue("browser/home_page_url", "qrc:/res/home.html");
     setValue("browser/error_url", "qrc:/res/error.html");
     setValue("browser/unsupported_url", "qrc:/res/unsupported.html");
     setValue("browser/pages_in_fast_history", 5);
-    setValue("browser/freeze_time_when_zoom_ms", 2500);
-    setValue("browser/freeze_time_when_drag_ms", 50);
-    setValue("browser/click_if_drag_at_most_px", 7);
+    setValue("browser/freeze_time_when_zoom_ms", 500);
+    setValue("browser/freeze_time_when_drag_ms", 500);
+    setValue("browser/click_if_drag_at_most_px", 10);
     setValue("hotpages/max_number_of_history_items", value("browser/pages_in_fast_history").toInt());
     setValue("hotpages/dont_track_scheme", "qrc");
     setValue("hotpages-store/number_of_items", 1);

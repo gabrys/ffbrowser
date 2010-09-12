@@ -6,8 +6,8 @@ QString StyleUpdater::styleForWidth(int width) {
 
 
 "__ffbrowser_updateStyleSheet__ = function() {"
-"   var style = document.getElementById('arora-mini-style-css');"
 "   if (document.getElementsByTagName('head').length) {"
+"       var style = document.getElementById('arora-mini-style-css');"
 "       if (! style) {"
 "           style = document.createElement('style');"
 "           style.type = 'text/css';"
@@ -20,7 +20,7 @@ QString StyleUpdater::styleForWidth(int width) {
 "           style.className = 'width-%2';"
 "       }"
 "   } else {"
-"       setTimeout(__ffbrowser_updateStyleSheet__, 250);"
+"       document.addEventListener('DOMContentLoaded', __ffbrowser_updateStyleSheet__, false);"
 "   }"
 "};"
 "__ffbrowser_updateStyleSheet__();"
@@ -34,27 +34,16 @@ QString StyleUpdater::styleForWidth(int width) {
 "   background-color: #fff;"
 "}\\n"
 
-// remove fancy animations
-"html, html > body, html > body > *, html > body > * * {"
-"    -webkit-transform: none !important;"
-"    -webkit-box-shadow: none !important;"
-"    -webkit-border-radius: 0 !important;"
-"    -webkit-transition-property: none !important;"
-"    -webkit-transition: none !important;"
-"    opacity: 1 !important;"
-"    background-attachment: scroll !important;"
-"}\\n"
-
 // assure text does not overflow over screen
-"* > p, * > ul, * > ol, * > li, * > td, "
-"* > h1, * > h2, * > h3, * > h4, * > h5, * > h6, "
-"* > span, * > dd, * > dt, * > label, "
-"* > input, * > textarea {"
+"p, ul, ol, li, td, "
+"h1, h2, h3, h4, h5, h6, "
+"span, dd, dt, label, "
+"input, textarea {"
 "    max-width: %3px !important;"
 "}\\n"
 
 // mark clicked links aggressively
-"* * > a:focus {"
+"a:focus {"
 "    background: orange !important;"
 "    color: white !important;"
 "    outline: orange 20px solid !important;"
@@ -66,6 +55,6 @@ QString StyleUpdater::styleForWidth(int width) {
 "}\\n"
 
 
-    )).arg(width).arg(width * 8/10);
+    )).arg(width).arg(width * 9/10);
 }
 
