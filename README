@@ -6,7 +6,6 @@ It is designed to be simple and as fast as possible. It features:
 * finger scrolling (scroll by moving finger on page contents)
 * simplified four-buttons user interface
 * joined bookmarks, history and tabs
-* fullscreen output
 
 ffbrowser is based on QtWebKit 2.0 which gives it excellent
 standard-compliance and fairly good performance.
